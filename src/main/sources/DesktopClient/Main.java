@@ -9,9 +9,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import java.util.Locale;
-
 public class Main extends Application {
+
+    public static void main(String[] args) {
+        launch();
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -29,7 +31,7 @@ public class Main extends Application {
 
         VKLoginPage vkLoginPage = new VKLoginPage();
         GridPane rootGridPane = new GridPane();
-        rootGridPane.setMinSize(600, 800);
+        rootGridPane.setMinSize(816, 740);
         rootGridPane.setAlignment(Pos.CENTER);
         rootGridPane.setHgap(10.0);
         rootGridPane.setVgap(10.0);
@@ -62,9 +64,5 @@ public class Main extends Application {
         });
         primaryStage.setScene(scene);
         primaryStage.show();
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 }

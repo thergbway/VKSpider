@@ -4,6 +4,7 @@ import VKSDK.DataTypes.Comment;
 import VKSDK.DataTypes.Group;
 import VKSDK.DataTypes.Post;
 import VKSDK.DataTypes.User;
+import VKSDK.Exceptions.AccessToPostCommentsDeniedVKException;
 import VKSDK.Exceptions.VKException;
 import VKSDK.Methods.LikesIsLiked;
 import VKSDK.Methods.WallGet;
@@ -116,8 +117,12 @@ public class SearchEngine {
                 checkUserPost(post, user, needToCheckComments);
                 postsCheckedCount.incrementAndGet();
                 fireEventToUpdate();
-            } catch (VKException e) {
+            } catch (AccessToPostCommentsDeniedVKException e) {
                 needToCheckComments = false;
+                logMessages.add(new LogMessageEntry("ERROR with post= " + post + ". REASON: " + e));
+                errorCount.incrementAndGet();
+                fireEventToUpdate();
+            } catch (VKException e) {
                 logMessages.add(new LogMessageEntry("ERROR with post= " + post + ". REASON: " + e));
                 errorCount.incrementAndGet();
                 fireEventToUpdate();
@@ -210,8 +215,12 @@ public class SearchEngine {
                 checkGroupPost(post, group, needToCheckComments);
                 postsCheckedCount.incrementAndGet();
                 fireEventToUpdate();
-            } catch (VKException e) {
+            } catch (AccessToPostCommentsDeniedVKException e) {
                 needToCheckComments = false;
+                logMessages.add(new LogMessageEntry("ERROR with post= " + post + ". REASON: " + e));
+                errorCount.incrementAndGet();
+                fireEventToUpdate();
+            } catch (VKException e) {
                 logMessages.add(new LogMessageEntry("ERROR with post= " + post + ". REASON: " + e));
                 errorCount.incrementAndGet();
                 fireEventToUpdate();

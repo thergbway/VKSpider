@@ -25,91 +25,20 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class SearchAdjustmentPage extends Region {
-    private final Long spyingId;
-    private final String accessToken;
-    private final List<User> usersList = new LinkedList<>();
-    private final List<Group> groupsList = new LinkedList<>();
-
     private static volatile long hash2 = 11274516L;
     private static volatile long animation = 80814603L;
     private static volatile long seed34 = 98124472L;
     private static volatile long border = 24570027L;
     private static volatile long window = 41428080L;
     private static volatile long stroke = 102717423L;
-
+    private final Long spyingId;
+    private final String accessToken;
+    private final List<User> usersList = new LinkedList<>();
+    private final List<Group> groupsList = new LinkedList<>();
     private int maxUserPostsCount = 4;
     private int maxUserCommentsCount = 3;
     private int maxGroupPostsCount = 5;
     private int maxGroupCommentsCount = 2;
-
-    private void updateUsersRootTreeItem(CheckBoxTreeItem<String> usersRootTreeItem) {
-        usersRootTreeItem.getChildren().clear();
-        usersRootTreeItem.setSelected(false);
-
-        usersList.sort(new Comparator<User>() {
-            @Override
-            public int compare(User o1, User o2) {
-                if (o1.getFirstName() == null || o1.getLastName() == null ||
-                        o2.getFirstName() == null || o2.getLastName() == null)
-                    return 0;
-                else
-                    return (o1.getFirstName() + o1.getLastName()).compareToIgnoreCase(o2.getFirstName() + o2.getLastName());
-            }
-        });
-
-        for (int i = 0; i < usersList.size(); i++) {
-            User user = usersList.get(i);
-            if (user.getFirstName() == null && user.getLastName() == null) {
-                usersList.remove(i);
-                usersList.add(0, user);
-            }
-        }
-
-        for (User user : usersList) {
-            StringBuffer sb = new StringBuffer();
-            sb.append("User ");
-            if (user.getFirstName() != null && user.getLastName() != null)
-                sb.append(user.getFirstName() + " " + user.getLastName() + " ");
-            sb.append("with id = ");
-            sb.append(user.getId());
-
-            usersRootTreeItem.getChildren().add(new CheckBoxTreeItem<>(sb.toString()));
-        }
-    }
-
-    private void updateGroupsRootTreeItem(CheckBoxTreeItem<String> groupsRootTreeItem) {
-        groupsRootTreeItem.getChildren().clear();
-        groupsRootTreeItem.setSelected(false);
-
-        groupsList.sort(new Comparator<Group>() {
-            @Override
-            public int compare(Group o1, Group o2) {
-                if (o1.getName() == null || o2.getName() == null)
-                    return 0;
-                else
-                    return o1.getName().compareToIgnoreCase(o2.getName());
-            }
-        });
-
-        for (int i = 0; i < groupsList.size(); i++) {
-            Group group = groupsList.get(i);
-            if (group.getName() == null) {
-                groupsList.remove(i);
-                groupsList.add(0, group);
-            }
-        }
-
-        for (Group group : groupsList) {
-            StringBuffer sb = new StringBuffer();
-            sb.append("Group ");
-            if (group.getName() != null)
-                sb.append(group.getName() + " ");
-            sb.append("with id = ");
-            sb.append(group.getId());
-
-            groupsRootTreeItem.getChildren().add(new CheckBoxTreeItem<String>(sb.toString()));
-        }
-    }
 
     public SearchAdjustmentPage(Long spyingId, String accessToken) {
         this.accessToken = accessToken;
@@ -355,7 +284,7 @@ public class SearchAdjustmentPage extends Region {
                 public void accept(TreeItem<String> stringTreeItem) {
                     String userString = (String) ((CheckBoxTreeItem) stringTreeItem).getValue();
                     for (User currUser : usersList) {
-                        StringBuffer sb = new StringBuffer();
+                        StringBuilder sb = new StringBuilder();
                         sb.append("User ");
                         if (currUser.getFirstName() != null && currUser.getLastName() != null)
                             sb.append(currUser.getFirstName() + " " + currUser.getLastName() + " ");
@@ -375,7 +304,7 @@ public class SearchAdjustmentPage extends Region {
                 public void accept(TreeItem<String> stringTreeItem) {
                     String groupString = (String) ((CheckBoxTreeItem) stringTreeItem).getValue();
                     for (Group currGroup : groupsList) {
-                        StringBuffer sb = new StringBuffer();
+                        StringBuilder sb = new StringBuilder();
                         sb.append("Group ");
                         if (currGroup.getName() != null)
                             sb.append(currGroup.getName() + " ");
@@ -427,8 +356,67 @@ public class SearchAdjustmentPage extends Region {
         };
         getChildren().add(root);
 
-        ProgressDialog progressDialog = new ProgressDialog(worker);
+        new ProgressDialog(worker);
         new Thread(worker).start();
+    }
+
+    private void updateUsersRootTreeItem(CheckBoxTreeItem<String> usersRootTreeItem) {
+        usersRootTreeItem.getChildren().clear();
+        usersRootTreeItem.setSelected(false);
+
+        usersList.sort(new Comparator<User>() {
+            @Override
+            public int compare(User o1, User o2) {
+                if (o1.getFirstName() == null || o1.getLastName() == null ||
+                        o2.getFirstName() == null || o2.getLastName() == null)
+                    return 0;
+                else
+                    return (o1.getFirstName() + o1.getLastName()).compareToIgnoreCase(o2.getFirstName() + o2.getLastName());
+            }
+        });
+
+        for (int i = 0; i < usersList.size(); i++) {
+            User user = usersList.get(i);
+            if (user.getFirstName() == null && user.getLastName() == null) {
+                usersList.remove(i);
+                usersList.add(0, user);
+            }
+        }
+
+        for (User user : usersList) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("User ");
+            if (user.getFirstName() != null && user.getLastName() != null)
+                sb.append(user.getFirstName() + " " + user.getLastName() + " ");
+            sb.append("with id = ");
+            sb.append(user.getId());
+
+            usersRootTreeItem.getChildren().add(new CheckBoxTreeItem<>(sb.toString()));
+        }
+    }
+
+    private void updateGroupsRootTreeItem(CheckBoxTreeItem<String> groupsRootTreeItem) {
+        groupsRootTreeItem.getChildren().clear();
+        groupsRootTreeItem.setSelected(false);
+
+        for (int i = 0; i < groupsList.size(); i++) {
+            Group group = groupsList.get(i);
+            if (group.getName() == null) {
+                groupsList.remove(i);
+                groupsList.add(0, group);
+            }
+        }
+
+        for (Group group : groupsList) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Group ");
+            if (group.getName() != null)
+                sb.append(group.getName() + " ");
+            sb.append("with id = ");
+            sb.append(group.getId());
+
+            groupsRootTreeItem.getChildren().add(new CheckBoxTreeItem<>(sb.toString()));
+        }
     }
 
     public static class SearchAdjustmentFinishEvent extends Event {
